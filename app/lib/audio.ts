@@ -1,40 +1,21 @@
-import axios from "axios";
-
-type AudioRouteResponse = {
-  response?: string;
-};
-
-function decodeBase64Audio(base64Audio: string): Uint8Array {
-  const binary = atob(base64Audio);
-  const bytes = new Uint8Array(binary.length);
-
-  for (let index = 0; index < binary.length; index += 1) {
-    bytes[index] = binary.charCodeAt(index);
-  }
-
-  return bytes;
-}
-
-export async function playAudio(text: string, speaker: string): Promise<void> {
-  const { data } = await axios.post<AudioRouteResponse>("/api/audio", {
-    text,
-    speaker,
+// lib/audio.ts
+export async function playAudio(text: string, speaker: any): Promise<void> {
+  const response = await fetch("/api/audio", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, speaker }),
   });
 
-  if (!data.response) {
-    throw new Error("No audio data was returned from /api/audio.");
+  if (!response.ok) {
+    throw new Error("Failed to fetch audio from /api/audio.");
   }
 
-  const audioBytes = decodeBase64Audio(data.response);
-  const audioBuffer = new ArrayBuffer(audioBytes.byteLength);
-  new Uint8Array(audioBuffer).set(audioBytes);
-
-  const audioBlob = new Blob([audioBuffer], { type: "audio/wav" });
+  // route.ts now returns binary directly, so we can use it as a blob
+  const audioBlob = await response.blob();
   const audioUrl = URL.createObjectURL(audioBlob);
   const audio = new Audio(audioUrl);
 
   const revokeObjectUrl = () => URL.revokeObjectURL(audioUrl);
-
   audio.addEventListener("ended", revokeObjectUrl, { once: true });
   audio.addEventListener("error", revokeObjectUrl, { once: true });
 

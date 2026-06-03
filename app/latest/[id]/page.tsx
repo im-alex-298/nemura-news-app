@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation';
 
-import sample from '@/public/no-image.png';
+import sample from '@/public/sample.jpg';
 import SafeImage from '@/components/SafeImage';
 import { playAudio } from '@/app/lib/audio';
 import {
@@ -15,6 +15,7 @@ import {
     getHatenaSourceIconUrl,
     getHatenaSourceName,
     HatenaNewsItem,
+    getHatenaNewsDate,
 } from '@/app/lib/news';
 import { useCurrentUserVoice } from '@/app/lib/useCurrentUserVoice';
 import { ArrowRightIcon } from '@/app/assets/icons';
@@ -70,10 +71,16 @@ export default function NewsDetailsPage() {
             </div>
         );
     }
-
     if (!newsItem) {
         return (
             <div className="bg-background-light min-h-screen flex items-center justify-center">
+                {/* Back button */}
+                <button
+                    onClick={() => router.back()}
+                    className="text-blue-400 bg-white-soft left-4  rotate-180 rounded-full p-1 absolute top-8 text-sm font-semibold"
+                >
+                    <ArrowRightIcon />
+                </button>
                 <p className="text-white">ニュースが見つかりません</p>
             </div>
         );
@@ -86,13 +93,15 @@ export default function NewsDetailsPage() {
     const sourceName = getHatenaSourceName(newsItem);
     const sourceIconUrl = getHatenaSourceIconUrl(newsItem);
     const tags = getHatenaNewsTags(newsItem);
+    const date = getHatenaNewsDate(newsItem);
+
     const visibleTags = [category, ...tags.filter((tag) => tag !== category)];
 
     return (
-        <div className="bg-background-light min-h-screen text-white pb-8">
+        <div className="bg-background-light min-h-screen h-full pb-8">
 
             {/* Hero image */}
-            <div className="w-full h-[250px] relative overflow-hidden">
+            <div className="w-full h-[320px] relative overflow-hidden z-10">
 
                 <SafeImage
                     alt={newsItem.title}
@@ -111,15 +120,23 @@ export default function NewsDetailsPage() {
                 </button>
 
                 {/* Title */}
-                <div>
-                    <h1 className="text-3xl font-bold leading-snug absolute normal text-white bottom-4 ms-4">
+                <div className='absolute bottom-4 left-4 right-4 z-20'>
+                    <div className="mb-4">
+                        {bookmarkCount !== null && (
+                            <span className="rounded-xl bg-white/25 px-3 py-1 caption text-white">
+                                <i className="fa-solid fa-bookmark"></i> {bookmarkCount}
+                            </span>
+                        )}
+                    </div>
+                    <h1 className="news-header">
                         {newsItem.title}
                     </h1>
+
                 </div>
             </div>
 
             {/* Content */}
-            <div className="px-4 mt-6 space-y-4">
+            <div className="px-4 pt-4 space-y-4">
                 {/* Category and Play Button */}
                 <div className="flex items-start justify-between gap-4">
                     <div className="flex min-w-0 flex-1 flex-col gap-3">
@@ -139,6 +156,7 @@ export default function NewsDetailsPage() {
                                     </div>
                                 )}
                             </div>
+
                             <div className="min-w-0">
                                 <p className="truncate text-sm font-semibold text-white-soft">
                                     {sourceName}
@@ -148,15 +166,14 @@ export default function NewsDetailsPage() {
                                         {author}
                                     </p>
                                 )}
+                                {
+                                    date && (
+                                        <p className="truncate text-xs text-white/80 mt-1">
+                                            {date.toLocaleDateString()}
+                                        </p>
+                                    )
+                                }
                             </div>
-                        </div>
-
-                        <div className="flex flex-wrap items-center gap-2 text-xs text-white/70">
-                            {bookmarkCount !== null && (
-                                <span className="rounded-full bg-white/10 px-3 py-1">
-                                    {bookmarkCount} users
-                                </span>
-                            )}
                         </div>
                     </div>
 
@@ -170,9 +187,17 @@ export default function NewsDetailsPage() {
                     </button>
                 </div>
 
+                {/* Description/Summary */}
+                <div className="py-2">
+                    <p className="news-desc">
+                        {getHatenaNewsDescription(newsItem) || "ニュース詳細"}
+                    </p>
+                </div>
+
+                {/* tags */}
                 {visibleTags.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                        {visibleTags.map((tag) => (
+                    <div className="flex flex-wrap gap-2 pt-2">
+                        {visibleTags.slice(0, 4).map((tag) => (
                             <span
                                 key={tag}
                                 className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-medium text-white-soft"
@@ -183,13 +208,6 @@ export default function NewsDetailsPage() {
                     </div>
                 )}
 
-                {/* Description/Summary */}
-                <div className="pt-4">
-                    <p className="text-[16px] tracking-widest leading-relaxed">
-                        {getHatenaNewsDescription(newsItem) || "ニュース詳細"}
-                    </p>
-                </div>
-
                 {/* Source link */}
                 {newsItem.link && (
                     <div className="pt-4">
@@ -197,9 +215,9 @@ export default function NewsDetailsPage() {
                             href={newsItem.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-400 underline text-sm"
+                            className="text-blue-400 underline"
                         >
-                            詳細へ
+                            詳細を読む →
                         </a>
                     </div>
                 )}

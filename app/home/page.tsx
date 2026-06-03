@@ -21,17 +21,10 @@ export default function HomePage() {
 
   useEffect(() => {
     fetch("/api/hatena?type=popular")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) setError(data.error);
-        else setNewTopics(data);
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
       })
-      .catch(() => setError("Failed to load data"));
-  }, []);
-
-  useEffect(() => {
-    fetch("/api/hatena?type=new")
-      .then((res) => res.json())
       .then((data) => {
         if (data.error) setError(data.error);
         else setPopularNews(data);
@@ -39,37 +32,48 @@ export default function HomePage() {
       .catch(() => setError("Failed to load data"));
   }, []);
 
+  useEffect(() => {
+    fetch("/api/hatena?type=new")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (data.error) setError(data.error);
+        else setNewTopics(data);
+      })
+      .catch(() => setError("Failed to load data"));
+  }, []);
+
   return (
     <main className="relative flex min-h-[100dvh] w-full flex-col overflow-y-auto bg-background-light no-scrollbar">
 
-      {/* bottom nav-bar */}
+      {/* bottom navigation bar */}
       <BottomNavigationBar />
-
       <div className="mx-auto flex w-full max-w-[30rem] flex-1 flex-col pb-28 pt-2">
+        <div className="shrink-0">
+          <NavigationHeader title="今日の Nemura" showBack={false} className="px-0" />
+        </div>
 
-        {/* home nav-bar */}
-        <div>
-          <div className="shrink-0">
-            <NavigationHeader title="今日の Nemura" showBack={false} className="px-0" />
-          </div>
+        {error && (
+          <p className="mt-3 rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-300">
+            {error}
+          </p>
+        )}
 
-          <div className="mt-4 flex justify-center">
-            <div className="relative aspect-[3/1] w-full max-w-[25rem]">
-              <SafeImage
-                src="/graphic-nemura.png"
-                alt="Nemura graphic"
-                fill
-                sizes="(max-width: 640px) 92vw, 25rem"
-                className="object-contain"
-              />
-            </div>
+        <div className="mt-4 flex justify-center">
+          <div className="relative aspect-[3/1] w-full max-w-[25rem]">
+            <SafeImage
+              src="/graphic-nemura.png"
+              alt="Nemura graphic"
+              fill
+              sizes="(max-width: 640px) 92vw, 25rem"
+              className="object-contain"
+            />
           </div>
         </div>
 
-        {/* content */}
         <div className="mt-6">
-
-          {/* pickup-section */}
           <section className="mb-8">
             <div className="mb-5 flex items-end justify-between gap-3">
               <div>
@@ -83,8 +87,8 @@ export default function HomePage() {
             </div>
 
             <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 no-scrollbar sm:-mx-6 sm:px-6">
-              {newTopics.slice(0, 5).map((news, idx) => (
-                <div key={idx} className="flex-shrink-0">
+              {newTopics.slice(0, 5).map((news) => (
+                <div key={news.link} className="flex-shrink-0">
                   <VerticalNewsCard
                     item={{
                       title: news.title,
@@ -100,7 +104,6 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* latest-news-section */}
           <section className="flex flex-col">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h2 className="title">最新ニュース</h2>
@@ -113,7 +116,7 @@ export default function HomePage() {
             <div className="space-y-3 sm:space-y-4">
               {popularNews.slice(0, 10).map((news) => (
                 <VoiceNewsCard
-                  key={news.title}
+                  key={news.link}
                   item={{
                     title: news.title,
                     imageUrl: news["hatena:imageurl"],

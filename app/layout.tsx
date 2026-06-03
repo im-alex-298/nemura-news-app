@@ -25,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
         />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/iconsax-react@0.0.8/dist/cjs/index.min.js" />
       </head>
       <body>
         <Providers>

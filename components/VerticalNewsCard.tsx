@@ -39,7 +39,7 @@ export default function VerticalNewsCard({
 
   return (
     <Link href={`/topic/${encodeURIComponent(item.title)}`}>
-      <div className="relative flex h-[14.5rem] w-[13.75rem] flex-col overflow-hidden rounded-2xl bg-[#3A86FF]/10 shadow-lg transition-colors hover:bg-[#3A86FF]/20 sm:h-[15.5rem] sm:w-[15rem]">
+      <div className="relative flex h-[14rem] w-[16rem] flex-col overflow-hidden rounded-2xl bg-[#3A86FF]/10 shadow-lg transition-colors hover:bg-[#3A86FF]/20 sm:h-[15.5rem] sm:w-[15rem]">
         
         <div className="relative h-[13rem] w-full sm:h-[10rem]">
           {imageUrl && (
@@ -59,14 +59,14 @@ export default function VerticalNewsCard({
           </h3>
           <span className="desc mt-auto">{subject}</span>
 
-          {/* <div className="absolute bottom-2 right-3 flex items-center space-x-3 text-gray-400">
+          <div className="absolute bottom-2 right-3 flex items-center space-x-3 text-gray-400">
             <button onClick={handleToggleAdd} className="hover:opacity-70 transition-opacity">
               {added ? <RemoveCircleIcon className="w-7 h-7" /> : <AddCircleIcon className="w-7 h-7" />}
             </button>
             <button onClick={(e) => { e.stopPropagation(); onPlayClick?.() }} className="hover:opacity-70 transition-opacity">
               <PlayCircleIcon className="w-7 h-7" />
             </button>
-          </div> */}
+          </div>
           
         </div>
 

@@ -9,23 +9,29 @@ import {
     PlayListAddCheckIcon
 } from "@/assets/icons/index"
 
+const ExploreIcon = () => (
+  <i className="fa-solid text-xl fa-magnifying-glass"></i>
+);
+
 export default function BottomNavigationBar() {
     const pathname = usePathname()
     const router = useRouter()
 
     const navItems = [
         { label: 'Home', icon: HomeIcon, path: '/home' },
+        { label: 'Explore', icon: ExploreIcon, path: '/explore' },
         { label: 'Radio', icon: SpeechToTextIcon, path: '/voice-player', small: true },
         { label: 'Playlist', icon: PlayListAddCheckIcon, path: '/playlist' },
     ]
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 z-[100] bg-black/90 backdrop-blur-md border-t border-white/10 py-4 rounded-t-lg px-8 sm:px-10">
+        <nav className="fixed bottom-0 left-0 right-0 z-[100] bg-black/90 backdrop-blur-md border-t border-white/10 py-4 rounded-t-lg">
             <div className="flex items-center justify-between max-w-[430px] mx-auto w-full">
                 {navItems.map((item) => {
                     const isActive = pathname === item.path
                     const Icon = item.icon
-                    const iconSizeClass = item.small ? 'scale-[1]' : 'scale-[1.4]'
+                    const iconSizeClass = item.small && 'scale-[0.9]'
+                    
 
                     return (
                         <button
