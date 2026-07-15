@@ -18,6 +18,7 @@ import OnexMobiledataComponent from './1x_mobiledata.svg';
 import BedtimeComponent from './bedtime.svg';
 import HomeComponent from './home.svg';
 import SettingComponent from './setting.svg';
+import RefreshComponent from './refresh.svg';
 
 // 外部コンポーネントが利用しやすい名前でエクスポート
 export const AddCircleIcon = AddCircleComponent;
@@ -37,3 +38,4 @@ export const SpeechToTextIcon = SpeechToTextComponent;
 export const BedtimeIcon = BedtimeComponent;
 export const HomeIcon = HomeComponent;
 export const SettingIcon = SettingComponent;
+export const RefreshIcon = RefreshComponent;
